@@ -13,9 +13,7 @@ public class LabyrinthSystem {
 
     private int pointX; //ブロックを置いたり消したりする目印。
     private int pointY;
-    private Stack<Integer> pointXStack = new Stack<Integer>();
-    private Stack<Integer> pointYStack = new Stack<Integer>();
-    private int labyrinthSize = 21;
+    private int labyrinthSize = 5;
     private String[][] labyrinthObject = new String[labyrinthSize][labyrinthSize];
 
     LabyrinthSystem() throws IOException {
@@ -25,12 +23,8 @@ public class LabyrinthSystem {
             }
         }
 
-        Random rnd = new Random();
-        pointX = rnd.nextInt((labyrinthSize / 2) * 2 - 1);
-        pointY = rnd.nextInt((labyrinthSize / 2) * 2 - 1);
-        labyrinthObject[pointX][pointY] = "empty";
-        pointXStack.push(pointX);
-        pointYStack.push(pointY);
+        pointX = randomPos(labyrinthSize);
+        pointY = randomPos(labyrinthSize);
 
         dig();
         show();
@@ -38,6 +32,7 @@ public class LabyrinthSystem {
 
     private void dig(){
         if (labyrinthObject[pointX][pointY] != null && labyrinthObject[pointX][pointY].equals("empty") && isAbleContinueDig()){
+            labyrinthObject[pointX][pointY] = "empty";
             Random rnd = new Random();
             int direction;
             direction = rnd.nextInt(4);
@@ -50,7 +45,6 @@ public class LabyrinthSystem {
                             break;//u
                         }
                     }
-                    break;
                 case 1:
                     if (pointY != labyrinthSize - 2) {
                         if (labyrinthObject[pointX][pointY + 2].equals("wall")) {
@@ -59,7 +53,6 @@ public class LabyrinthSystem {
                             break;//d
                         }
                     }
-                    break;
                 case 2:
                     if (pointX != 1) {
                         if (labyrinthObject[pointX - 2][pointY].equals("wall")) {
@@ -68,7 +61,6 @@ public class LabyrinthSystem {
                             break;//l
                         }
                     }
-                    break;
                 case 3:
                     if (pointX != labyrinthSize - 2) {
                         if (labyrinthObject[pointX + 2][pointY].equals("wall")) {
