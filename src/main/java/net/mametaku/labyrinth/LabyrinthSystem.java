@@ -3,18 +3,14 @@ package net.mametaku.labyrinth;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Random;
 import java.util.Stack;
-import java.util.Scanner;
 
-import static net.mametaku.labyrinth.Main.config;
+import static net.mametaku.labyrinth.Main.dataFolder;
 
 public class LabyrinthSystem {
-    private Plugin plugin;
+
     private int pointX; //ブロックを置いたり消したりする目印。
     private int pointY;
     private Stack<Integer> pointXStack = new Stack<Integer>();
@@ -30,8 +26,8 @@ public class LabyrinthSystem {
         }
 
         Random rnd = new Random();
-        pointX = rnd.nextInt(rnd.nextInt(labyrinthSize / 2) * 2 - 1);
-        pointY = rnd.nextInt(rnd.nextInt(labyrinthSize / 2) * 2 - 1);
+        pointX = rnd.nextInt((labyrinthSize / 2) * 2 - 1);
+        pointY = rnd.nextInt((labyrinthSize / 2) * 2 - 1);
         labyrinthObject[pointX][pointY] = "empty";
         pointXStack.push(pointX);
         pointYStack.push(pointY);
@@ -41,7 +37,7 @@ public class LabyrinthSystem {
     }
 
     private void dig(){
-        if (labyrinthObject[pointX][pointY].equals("empty") && isAbleContinueDig()){
+        if (labyrinthObject[pointX][pointY] != null && labyrinthObject[pointX][pointY].equals("empty") && isAbleContinueDig()){
             Random rnd = new Random();
             int direction;
             direction = rnd.nextInt(4);
@@ -142,7 +138,7 @@ public class LabyrinthSystem {
     }
 
     public void show() throws IOException {
-        File file = new File(plugin.getDataFolder(),"labyrinth.txt");
+        File file = new File(dataFolder,"labyrinth.txt");
         if(!file.exists()) {
             try {
                 file.createNewFile();
@@ -150,17 +146,17 @@ public class LabyrinthSystem {
                 e1.printStackTrace();
             }
         }
-        FileWriter fw = new FileWriter(file);
-        BufferedWriter bw = new BufferedWriter(fw);
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
         for (int y = 0; y < labyrinthObject[0].length; y++) {
-            bw.newLine();
+            pw.println("");
             for (int x = 0; x < labyrinthObject.length; x++) {
                 if (labyrinthObject[x][y].equals("wall")) {
-                    bw.write("##");
+                    pw.print("##");
                 } else {
-                    bw.write("  ");
+                    pw.print("  ");
                 }
             }
         }
+        pw.close();
     }
 }
