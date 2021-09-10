@@ -25,14 +25,14 @@ public class LabyrinthSystem {
 
         pointX = randomPos(labyrinthSize);
         pointY = randomPos(labyrinthSize);
+        labyrinthObject[pointX][pointY] = "empty";
 
         dig();
         show();
     }
 
-    private void dig(){
-        if (labyrinthObject[pointX][pointY] != null && labyrinthObject[pointX][pointY].equals("empty") && isAbleContinueDig()){
-            labyrinthObject[pointX][pointY] = "empty";
+    private void dig() throws IOException {
+        if (labyrinthObject[pointX][pointY].equals("empty") && isAbleContinueDig()){
             Random rnd = new Random();
             int direction;
             direction = rnd.nextInt(4);
@@ -42,6 +42,7 @@ public class LabyrinthSystem {
                         if (labyrinthObject[pointX][pointY - 2].equals("wall")) {
                             labyrinthObject[pointX][pointY - 1] = "empty";
                             pointY -= 2;
+                            Bukkit.broadcastMessage("0");
                             break;//u
                         }
                     }
@@ -50,6 +51,7 @@ public class LabyrinthSystem {
                         if (labyrinthObject[pointX][pointY + 2].equals("wall")) {
                             labyrinthObject[pointX][pointY + 1] = "empty";
                             pointY += 2;
+                            Bukkit.broadcastMessage("1");
                             break;//d
                         }
                     }
@@ -58,6 +60,7 @@ public class LabyrinthSystem {
                         if (labyrinthObject[pointX - 2][pointY].equals("wall")) {
                             labyrinthObject[pointX - 1][pointY] = "empty";
                             pointX -= 2;
+                            Bukkit.broadcastMessage("2");
                             break;//l
                         }
                     }
@@ -66,15 +69,18 @@ public class LabyrinthSystem {
                         if (labyrinthObject[pointX + 2][pointY].equals("wall")) {
                             labyrinthObject[pointX + 1][pointY] = "empty";
                             pointX += 2;
+                            Bukkit.broadcastMessage("3");
                             break;//r
                         }
                     }
                     labyrinthObject[pointX][pointY] = "empty";
+                    show();
                     dig();
             }
         }else if (isAbleDig()){
             pointX = randomPos(labyrinthSize);
             pointY = randomPos(labyrinthSize);
+            show();
             dig();
         }
     }
@@ -85,24 +91,17 @@ public class LabyrinthSystem {
     }
 
     private boolean isAbleDig() { //まだ掘るところがあるか確かめる
-        boolean result;
         int cnt = 0;
-        for (int y = 0; y < labyrinthSize; y++) {
-            for (int x = 0; x < labyrinthSize; x++) {
-                if (x % 2 != 0 && y % 2 != 0) {
-
-                    if (!labyrinthObject[x][y].equals("empty")) {
+        for (int i = 0;i < labyrinthSize;i++){
+            for (int j = 0;j < labyrinthSize;j++){
+                if (i % 2 != 0 && j % 2 != 0){
+                    if (!labyrinthObject[i][j].equals("empty")){
                         cnt++;
                     }
                 }
             }
         }
-        if (cnt == 0) {
-            result = false;
-        } else {
-            result = true;
-        }
-        return result;
+        return (cnt != 0);
     }
 
     private boolean isAbleContinueDig(){
