@@ -7,9 +7,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import static net.mametaku.labyrinth.Main.labyrinthgame;
 import static net.mametaku.labyrinth.Main.title;
 
 public class LabyrinthGUI {
+
     public void startMenu(Player p){
         InventoryGUI inv = new InventoryGUI(27,title);
         inv.setItem(10,Material.GREEN_CONCRETE,"スタート","ここをクリックで始まります！");
@@ -18,6 +20,7 @@ public class LabyrinthGUI {
         inv.setItem(16,Material.RED_CONCRETE,"ゲーム終了","ここをクリックで画面を閉じます！");
         inv.openInventory(p);
     }
+
     public void rankingMenu(Player p){
         InventoryGUI inv = new InventoryGUI(54,title);
         for (int i=46;i<53;i++){
@@ -31,11 +34,7 @@ public class LabyrinthGUI {
     }
     public void gameMenu(Player p){
         InventoryGUI inv = new InventoryGUI(54,title);
-        for(int i=0;i<6;i++){
-            for(int j=0;j<6;j++){
-                inv.setItem(i*6+j+i*3+3,Material.DEEPSLATE_BRICKS,"");
-            }
-        }
+        setMap();
         inv.setItem(1,Material.SPRUCE_SAPLING,"",1001);
         inv.setItem(27,Material.SPRUCE_SAPLING,"左に回転",1002);
         inv.setItem(28,Material.SPRUCE_SAPLING,"上",1003);
@@ -47,5 +46,14 @@ public class LabyrinthGUI {
         inv.setItem(46,Material.SPRUCE_SAPLING,"下",1009);
         inv.setItem(47,Material.SPRUCE_SAPLING,"ログ",1010);
         inv.openInventory(p);
+    }
+
+    public void setMap(){
+        String[][] map = new LabyrinthSystem().labyrinthObject;
+        for(int i=0;i<6;i++){
+            for(int j=0;j<6;j++){
+
+            }
+        }
     }
 }

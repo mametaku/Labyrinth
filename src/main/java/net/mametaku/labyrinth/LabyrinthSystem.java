@@ -1,7 +1,5 @@
 package net.mametaku.labyrinth;
 
-import org.bukkit.Bukkit;
-
 import java.io.*;
 import java.util.Random;
 
@@ -11,24 +9,25 @@ public class LabyrinthSystem {
 
     private static int pointX; //ブロックを置いたり消したりする目印。
     private static int pointY;
-    private static int labyrinthSize = 15;
-    private static String[][] labyrinthObject = new String[labyrinthSize][labyrinthSize];
+    private static final int labyrinthSize = 15;
+    public String[][] labyrinthObject = new String[labyrinthSize][labyrinthSize];
 
-    LabyrinthSystem() throws IOException {
+    public LabyrinthSystem() {
         for (int i = 0; i < labyrinthSize; i++) {
             for (int j = 0; j < labyrinthSize; j++) {
                 labyrinthObject[i][j] = "wall";
             }
         }
-        pointX = randomPos(labyrinthSize);
-        pointY = randomPos(labyrinthSize);
+        pointX = randomPos();
+        pointY = randomPos();
         labyrinthObject[pointX][pointY] = "empty";
 
         dig();
+        setStartAndGoal();
         show();
     }
 
-    private void dig() throws IOException {
+    private void dig() {
         if (labyrinthObject[pointX][pointY].equals("empty") && isAbleContinueDig()){
             Random rnd = new Random();
             int direction;
@@ -39,8 +38,7 @@ public class LabyrinthSystem {
                         if (labyrinthObject[pointX][pointY - 2].equals("wall")) {
                             labyrinthObject[pointX][pointY - 1] = "empty";
                             pointY -= 2;
-                            Bukkit.broadcastMessage("0");
-                            break;//u
+                            //u
                         }
                     }
                 case 1:
@@ -48,8 +46,7 @@ public class LabyrinthSystem {
                         if (labyrinthObject[pointX][pointY + 2].equals("wall")) {
                             labyrinthObject[pointX][pointY + 1] = "empty";
                             pointY += 2;
-                            Bukkit.broadcastMessage("1");
-                            break;//d
+                            //d
                         }
                     }
                 case 2:
@@ -57,8 +54,7 @@ public class LabyrinthSystem {
                         if (labyrinthObject[pointX - 2][pointY].equals("wall")) {
                             labyrinthObject[pointX - 1][pointY] = "empty";
                             pointX -= 2;
-                            Bukkit.broadcastMessage("2");
-                            break;//l
+                            //l
                         }
                     }
                 case 3:
@@ -66,23 +62,21 @@ public class LabyrinthSystem {
                         if (labyrinthObject[pointX + 2][pointY].equals("wall")) {
                             labyrinthObject[pointX + 1][pointY] = "empty";
                             pointX += 2;
-                            Bukkit.broadcastMessage("3");
-                            break;//r
+                            //r
                         }
                     }
-                    labyrinthObject[pointX][pointY] = "empty";
-                    dig();
             }
+            labyrinthObject[pointX][pointY] = "empty";
+            dig();
         }else if (isAbleDig()){
-            pointX = randomPos(labyrinthSize);
-            pointY = randomPos(labyrinthSize);
+            pointX = randomPos();
+            pointY = randomPos();
             dig();
         }
     }
 
-    int randomPos(int muki) { //x,y座標共に奇数なランダムな座標を返す
-        int result = 1 + 2 * (int) Math.floor((Math.random() * (muki - 1)) / 2);
-        return result;
+    int randomPos() { //x,y座標共に奇数なランダムな座標を返す
+        return 1 + 2 * (int) Math.floor((Math.random() * (LabyrinthSystem.labyrinthSize - 1)) / 2);
     }
 
     private boolean isAbleDig() { //まだ掘るところがあるか確かめる
@@ -123,7 +117,28 @@ public class LabyrinthSystem {
         return false;
     }
 
-    public void show() throws IOException {
+    private void setStartAndGoal(){
+        boolean start = true;
+        boolean goal = true;
+        Random rnd = new Random();
+        while(start || goal){
+            int x = rnd.nextInt(labyrinthSize - 2) + 1;
+            int y = rnd.nextInt(labyrinthSize - 2) + 1;
+            if (start){
+                if (!labyrinthObject[x][y].equals("wall")){
+                    labyrinthObject[x][y] = "start";
+                    start = false;
+                }
+            }else {
+                if (!labyrinthObject[x][y].equals("wall") && !labyrinthObject[x][y].equals("start")){
+                    labyrinthObject[x][y] = "goal";
+                    goal = false;
+                }
+            }
+        }
+    }
+
+    public void show() {
         File file = new File(dataFolder,"labyrinth.txt");
         if(!file.exists()) {
             try {
@@ -132,17 +147,53 @@ public class LabyrinthSystem {
                 e1.printStackTrace();
             }
         }
-        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (int y = 0; y < labyrinthSize; y++) {
             pw.println("");
             for (int x = 0; x < labyrinthSize; x++) {
-                if (labyrinthObject[x][y].equals("wall")) {
-                    pw.print("##");
-                } else {
-                    pw.print("  ");
+                switch (labyrinthObject[x][y]) {
+                    case "wall":
+                        pw.print("##");
+                        break;
+                    case "start":
+                        pw.print("SS");
+                        break;
+                    case "goal":
+                        pw.print("GG");
+                        break;
+                    default:
+                        pw.print("  ");
+                        break;
                 }
             }
         }
         pw.close();
+    }
+
+    public String getStartPoint() {
+        for (int i = 0;i < labyrinthSize;i++){
+            for (int j = 0;j < labyrinthSize;j++){
+                if (labyrinthObject[i][j].equals("start")){
+                    return labyrinthObject[i][j];
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getGoalPoint() {
+        for (int i = 0;i < labyrinthSize;i++){
+            for (int j = 0;j < labyrinthSize;j++){
+                if (labyrinthObject[i][j].equals("goal")){
+                    return labyrinthObject[i][j];
+                }
+            }
+        }
+        return null;
     }
 }
