@@ -24,11 +24,7 @@ public class Commands implements CommandExecutor {
                     player.sendMessage("テスト");
                 return false;
                 case  "create":
-                    try {
-                        new LabyrinthSystem();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    new LabyrinthSystem();
             }
         }
         currentPlayer.add(player.getUniqueId());

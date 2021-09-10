@@ -34,7 +34,7 @@ public class LabyrinthGUI {
     }
     public void gameMenu(Player p){
         InventoryGUI inv = new InventoryGUI(54,title);
-        setMap();
+        getMap(inv);
         inv.setItem(1,Material.SPRUCE_SAPLING,"",1001);
         inv.setItem(27,Material.SPRUCE_SAPLING,"左に回転",1002);
         inv.setItem(28,Material.SPRUCE_SAPLING,"上",1003);
@@ -48,11 +48,31 @@ public class LabyrinthGUI {
         inv.openInventory(p);
     }
 
-    public void setMap(){
-        String[][] map = new LabyrinthSystem().labyrinthObject;
+    public void getMap(InventoryGUI inv){
+        LabyrinthSystem labyrinth = new LabyrinthSystem();
+        String[][] map = labyrinth.labyrinthObject;
         for(int i=0;i<6;i++){
-            for(int j=0;j<6;j++){
-
+            for(int j=0;j<6;j++) {
+                int slot = i * 6 + j + i * 3 + 3;
+                for (int x = 0; x < map[0].length; x++) {
+                    for (int y = 0; y < map.length; y++) {
+                        Bukkit.broadcastMessage(map[x][y]);
+                        switch (map[x][y]){
+                            case "wall":
+                                inv.setItem(slot,Material.COBBLESTONE,"");
+                                break;
+                            case "start":
+                                inv.setItem(slot,Material.PLAYER_HEAD,"PLAYER");
+                                break;
+                            case "goal":
+                                inv.setItem(slot,Material.BELL,"GOAL");
+                                break;
+                            default:
+                                inv.setItem(slot,Material.BLACK_STAINED_GLASS_PANE,"");
+                                break;
+                        }
+                    }
+                }
             }
         }
     }

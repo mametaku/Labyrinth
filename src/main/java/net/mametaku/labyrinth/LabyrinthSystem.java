@@ -175,22 +175,22 @@ public class LabyrinthSystem {
         pw.close();
     }
 
-    public String getStartPoint() {
+    public int[] getStartPoint() {
         for (int i = 0;i < labyrinthSize;i++){
             for (int j = 0;j < labyrinthSize;j++){
                 if (labyrinthObject[i][j].equals("start")){
-                    return labyrinthObject[i][j];
+                    return new int[]{i, j};
                 }
             }
         }
         return null;
     }
 
-    public String getGoalPoint() {
+    public int[] getGoalPoint() {
         for (int i = 0;i < labyrinthSize;i++){
             for (int j = 0;j < labyrinthSize;j++){
                 if (labyrinthObject[i][j].equals("goal")){
-                    return labyrinthObject[i][j];
+                    return new int[]{i, j};
                 }
             }
         }
