@@ -22,7 +22,6 @@ public class LabyrinthSystem {
                 labyrinthObject[i][j] = "wall";
             }
         }
-
         pointX = randomPos(labyrinthSize);
         pointY = randomPos(labyrinthSize);
         labyrinthObject[pointX][pointY] = "empty";
@@ -74,13 +73,11 @@ public class LabyrinthSystem {
                         }
                     }
                     labyrinthObject[pointX][pointY] = "empty";
-                    show();
                     dig();
             }
         }else if (isAbleDig()){
             pointX = randomPos(labyrinthSize);
             pointY = randomPos(labyrinthSize);
-            show();
             dig();
         }
     }
@@ -138,9 +135,9 @@ public class LabyrinthSystem {
             }
         }
         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
-        for (int y = 0; y < labyrinthObject[0].length; y++) {
+        for (int y = 0; y < labyrinthSize; y++) {
             pw.println("");
-            for (int x = 0; x < labyrinthObject.length; x++) {
+            for (int x = 0; x < labyrinthSize; x++) {
                 if (labyrinthObject[x][y].equals("wall")) {
                     pw.print("##");
                 } else {
