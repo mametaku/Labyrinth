@@ -1,20 +1,18 @@
 package net.mametaku.labyrinth;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 import java.io.*;
 import java.util.Random;
-import java.util.Stack;
 
 import static net.mametaku.labyrinth.Main.dataFolder;
 
 public class LabyrinthSystem {
 
-    private int pointX; //ブロックを置いたり消したりする目印。
-    private int pointY;
-    private int labyrinthSize = 5;
-    private String[][] labyrinthObject = new String[labyrinthSize][labyrinthSize];
+    private static int pointX; //ブロックを置いたり消したりする目印。
+    private static int pointY;
+    private static int labyrinthSize = 15;
+    private static String[][] labyrinthObject = new String[labyrinthSize][labyrinthSize];
 
     LabyrinthSystem() throws IOException {
         for (int i = 0; i < labyrinthSize; i++) {
