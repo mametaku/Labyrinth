@@ -1,0 +1,9 @@
+canPlay: true
+
+labyrinthSize: 21
+
+Material: "SPRUCE_SAPLING"
+gameuiicon:
+  uparrow:
+    cmd:
+  rightarrow:

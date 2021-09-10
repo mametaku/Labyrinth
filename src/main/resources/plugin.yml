@@ -1,0 +1,6 @@
+name: Labyrinth
+version: ${project.version}
+main: net.mametaku.labyrinth.Main
+api-version: 1.17
+commands:
+  labyrinth:
