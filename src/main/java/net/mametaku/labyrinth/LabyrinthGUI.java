@@ -87,37 +87,48 @@ public class LabyrinthGUI {
         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         String[][] map = labyrinth.labyrinthObject;
+
         int[] playerPoint = new int[2];
+        LOOP:
         for (int i = 0;i < labyrinth.labyrinthSize;i++){
             for (int j = 0;j < labyrinth.labyrinthSize;j++){
                 if (map[i][j].equals("player")){
                     switch (dir){
                         case "up":
-                            if (!labyrinth.checkWall(i, min(j + 1,labyrinth.labyrinthSize))){
-                                labyrinth.labyrinthObject[i][j] = "empty";
-                                labyrinth.labyrinthObject[i][j + 1] = "player";
-                                break;
-                            }
-                        case "down":
                             if (!labyrinth.checkWall(i, j - 1)){
                                 labyrinth.labyrinthObject[i][j] = "empty";
                                 labyrinth.labyrinthObject[i][j - 1] = "player";
                                 playerPoint = new int[]{i, j - 1};
-                                break;
+                                break LOOP;
+                            }else{
+                                return;
+                            }
+                        case "down":
+                            if (!labyrinth.checkWall(i, j + 1)){
+                                labyrinth.labyrinthObject[i][j] = "empty";
+                                labyrinth.labyrinthObject[i][j + 1] = "player";
+                                playerPoint = new int[]{i, j + 1};
+                                break LOOP;
+                            }else{
+                                return;
                             }
                         case "right":
-                            if (!labyrinth.checkWall(i - 1, j)){
-                                labyrinth.labyrinthObject[i][j] = "empty";
-                                labyrinth.labyrinthObject[i - 1][j] = "player";
-                                playerPoint = new int[]{i - 1, j};
-                                break;
-                            }
-                        case "left":
                             if (!labyrinth.checkWall(i + 1, j)){
                                 labyrinth.labyrinthObject[i][j] = "empty";
                                 labyrinth.labyrinthObject[i + 1][j] = "player";
                                 playerPoint = new int[]{i + 1, j};
-                                break;
+                                break LOOP;
+                            }else{
+                                return;
+                            }
+                        case "left":
+                            if (!labyrinth.checkWall(i - 1, j)){
+                                labyrinth.labyrinthObject[i][j] = "empty";
+                                labyrinth.labyrinthObject[i - 1][j] = "player";
+                                playerPoint = new int[]{i - 1, j};
+                                break LOOP;
+                            }else{
+                                return;
                             }
                     }
                 }
