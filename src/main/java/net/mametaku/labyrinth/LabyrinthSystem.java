@@ -54,7 +54,6 @@ public class LabyrinthSystem {
 
             dig();
             setplayerAndGoal();
-            show();
         } else {
             Bukkit.getLogger().info("縦・横共に5以上の奇数で作成してください。");
         }
@@ -171,42 +170,42 @@ public class LabyrinthSystem {
         }
     }
 
-    public void show() {
-        File file = new File(dataFolder,"labyrinth.txt");
-        if(!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (int y = 0; y < labyrinthSize; y++) {
-            pw.println("");
-            for (int x = 0; x < labyrinthSize; x++) {
-                switch (labyrinthObject[x][y]) {
-                    case WALL:
-                        pw.print("##");
-                        break;
-                    case PLAYER:
-                        pw.print("PP");
-                        break;
-                    case GOAL:
-                        pw.print("GG");
-                        break;
-                    default:
-                        pw.print("  ");
-                        break;
-                }
-            }
-        }
-        pw.close();
-    }
+//    public void show() {
+//        File file = new File(dataFolder,"labyrinth.txt");
+//        if(!file.exists()) {
+//            try {
+//                file.createNewFile();
+//            } catch (IOException e1) {
+//                e1.printStackTrace();
+//            }
+//        }
+//        PrintWriter pw = null;
+//        try {
+//            pw = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        for (int y = 0; y < labyrinthSize; y++) {
+//            pw.println("");
+//            for (int x = 0; x < labyrinthSize; x++) {
+//                switch (labyrinthObject[x][y]) {
+//                    case WALL:
+//                        pw.print("##");
+//                        break;
+//                    case PLAYER:
+//                        pw.print("PP");
+//                        break;
+//                    case GOAL:
+//                        pw.print("GG");
+//                        break;
+//                    default:
+//                        pw.print("  ");
+//                        break;
+//                }
+//            }
+//        }
+//        pw.close();
+//    }
 
     public Boolean checkWall(int i,int j){
         return labyrinthObject[i][j].equals(MaterialType.WALL);
