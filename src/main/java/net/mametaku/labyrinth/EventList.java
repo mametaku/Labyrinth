@@ -37,7 +37,7 @@ public class EventList implements Listener {
                 } else if (matchName(clickedItem,"上")){
                     LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
                     labyrinth.updateViewDirection();
-                    new LabyrinthGUI().move(player);
+                    labyrinth.moveMap(player);
                 }else if (matchName(clickedItem,"右に回転")){
                     LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
                     labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.RIGHT,labyrinth.playerView);
