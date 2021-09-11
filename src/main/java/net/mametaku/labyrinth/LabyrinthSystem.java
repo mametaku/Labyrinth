@@ -9,8 +9,7 @@ import java.util.Random;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static net.mametaku.labyrinth.LabyrinthSystem.MaterialType.FRONTEMPTY;
-import static net.mametaku.labyrinth.LabyrinthSystem.MaterialType.WALL;
+import static net.mametaku.labyrinth.LabyrinthSystem.MaterialType.*;
 import static net.mametaku.labyrinth.Main.*;
 import static net.mametaku.labyrinth.Main.labyrinthGameInventory;
 
@@ -296,6 +295,14 @@ public class LabyrinthSystem {
         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         LabyrinthSystem.MaterialType[][] map = labyrinth.labyrinthObject;
+        ViewDirection dir = playerView;
+        for (int i = 0;i < labyrinth.labyrinthSize;i++){
+            for (int j = 0;j < labyrinth.labyrinthSize;j++) {
+                if (map[i][j] == FRONTEMPTY){
+                    map[i][j] = EMPTY;
+                }
+            }
+        }
         int[] playerPoint = labyrinth.getplayerPoint();
         int a = playerPoint[0];
         int b = playerPoint[1];
@@ -304,8 +311,31 @@ public class LabyrinthSystem {
         for (int i = 0;i < labyrinth.labyrinthSize;i++){
             for (int j = 0;j < labyrinth.labyrinthSize;j++) {
                 if (map[i][j].equals(LabyrinthSystem.MaterialType.PLAYER)){
-                    if (!map[i][j - 1].equals(WALL)){
-                        map[i][j - 1] = FRONTEMPTY;
+                    switch (dir){
+                        case NORTH:
+                            if (!map[i][j - 1].equals(WALL)){
+                                map[i][j - 1] = FRONTEMPTY;
+                                break;
+                            }
+                            break;
+                        case SOUTH:
+                            if (!map[i][j + 1].equals(WALL)){
+                                map[i][j + 1] = FRONTEMPTY;
+                                break;
+                            }
+                            break;
+                        case WEST:
+                            if (!map[i - 1][j].equals(WALL)){
+                                map[i - 1][j]= FRONTEMPTY;
+                                break;
+                            }
+                            break;
+                        case EAST:
+                            if (!map[i + 1][j].equals(WALL)){
+                                map[i + 1][j]= FRONTEMPTY;
+                                break;
+                            }
+                            break;
                     }
                 }
             }
@@ -337,10 +367,8 @@ public class LabyrinthSystem {
     public void moveMap(Player player){
         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
-        LabyrinthSystem.MaterialType[][] map = labyrinth.labyrinthObject;
-        LabyrinthSystem.ViewDirection view = labyrinth.playerView;
-        Bukkit.broadcastMessage(""+view);
-        updateMap(player);
+        MaterialType[][] map = labyrinth.labyrinthObject;
+        ViewDirection view = labyrinth.playerView;
         int[] playerPoint = new int[2];
         LOOP:
         for (int i = 0;i < labyrinth.labyrinthSize;i++){
@@ -349,8 +377,8 @@ public class LabyrinthSystem {
                     switch (view){
                         case NORTH:
                             if (!labyrinth.checkWall(i, j - 1)){
-                                labyrinth.labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
-                                labyrinth.labyrinthObject[i][j - 1] = LabyrinthSystem.MaterialType.PLAYER;
+                                labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
+                                labyrinthObject[i][j - 1] = LabyrinthSystem.MaterialType.PLAYER;
                                 playerPoint = new int[]{i, j - 1};
                                 break LOOP;
                             }
@@ -358,8 +386,8 @@ public class LabyrinthSystem {
                             break LOOP;
                         case SOUTH:
                             if (!labyrinth.checkWall(i, j + 1)){
-                                labyrinth.labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
-                                labyrinth.labyrinthObject[i][j + 1] = LabyrinthSystem.MaterialType.PLAYER;
+                                labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
+                                labyrinthObject[i][j + 1] = LabyrinthSystem.MaterialType.PLAYER;
                                 playerPoint = new int[]{i, j + 1};
                                 break LOOP;
                             }
@@ -367,8 +395,8 @@ public class LabyrinthSystem {
                             break LOOP;
                         case WEST:
                             if (!labyrinth.checkWall(i - 1, j)){
-                                labyrinth.labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
-                                labyrinth.labyrinthObject[i - 1][j] = LabyrinthSystem.MaterialType.PLAYER;
+                                labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
+                                labyrinthObject[i - 1][j] = LabyrinthSystem.MaterialType.PLAYER;
                                 playerPoint = new int[]{i - 1, j};
                                 break LOOP;
                             }
@@ -376,8 +404,8 @@ public class LabyrinthSystem {
                             break LOOP;
                         case EAST:
                             if (!labyrinth.checkWall(i + 1, j)){
-                                labyrinth.labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
-                                labyrinth.labyrinthObject[i + 1][j] = LabyrinthSystem.MaterialType.PLAYER;
+                                labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
+                                labyrinthObject[i + 1][j] = LabyrinthSystem.MaterialType.PLAYER;
                                 playerPoint = new int[]{i + 1, j };
                                 break LOOP;
                             }
@@ -387,10 +415,11 @@ public class LabyrinthSystem {
                 }
             }
         }
+        updateMap(player);
         int a = playerPoint[0];
         int b = playerPoint[1];
-        int x = min(max(0,a-2), labyrinth.labyrinthSize - 6);
-        int y = min(max(0,b-2), labyrinth.labyrinthSize - 6);
+        int x = min(max(0,a-2), labyrinthSize - 6);
+        int y = min(max(0,b-2), labyrinthSize - 6);
         for(int ix=0;ix<6;ix++){
             for(int iy=0;iy<6;iy++){
                 switch (map[x+ix][y+iy]){
@@ -403,8 +432,12 @@ public class LabyrinthSystem {
                     case GOAL:
                         inv.setItem(ix+9*iy+3,Material.BELL,"GOAL");
                         break;
-                    default:
+                    case EMPTY:
                         inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
+                        break;
+                    case FRONTEMPTY:
+                        inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
+                        inv.enchantItem(ix+9*iy+3);
                         break;
                 }
             }
