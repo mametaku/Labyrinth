@@ -1,6 +1,7 @@
 package net.mametaku.labyrinth;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 
 import java.io.*;
 import java.util.Random;
@@ -13,18 +14,45 @@ public class LabyrinthSystem {
     private static int pointX; //ブロックを置いたり消したりする目印。
     private static int pointY;
     public int labyrinthSize = config.getInt("labyrinthSize");
-    public String[][] labyrinthObject = new String[labyrinthSize][labyrinthSize];
+    public MaterialType[][] labyrinthObject = new MaterialType[labyrinthSize][labyrinthSize];
+    public ViewDirection playerView;
+
+    public enum MaterialType{
+        EMPTY,
+        WALL,
+        PLAYER,
+        GOAL,
+    }
+
+    public enum MoveDirection{
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT,
+    }
+
+    public enum ViewDirection{
+        NORTH,
+        SOUTH,
+        WEST,//西
+        EAST,//東
+    }
+
+    public enum SpinDirection{
+        RIGHT,
+        LEFT,
+    }
 
     public LabyrinthSystem() {
         if (labyrinthSize % 2 != 0 && 5 <= labyrinthSize) {
             for (int i = 0; i < labyrinthSize; i++) {
                 for (int j = 0; j < labyrinthSize; j++) {
-                    labyrinthObject[i][j] = "wall";
+                    labyrinthObject[i][j] = MaterialType.WALL;
                 }
             }
             pointX = randomPos();
             pointY = randomPos();
-            labyrinthObject[pointX][pointY] = "empty";
+            labyrinthObject[pointX][pointY] = MaterialType.EMPTY;
 
             dig();
             setplayerAndGoal();
@@ -35,45 +63,45 @@ public class LabyrinthSystem {
     }
 
     private void dig() {
-        if (labyrinthObject[pointX][pointY].equals("empty") && isAbleContinueDig()){
+        if (labyrinthObject[pointX][pointY].equals(MaterialType.EMPTY) && isAbleContinueDig()){
             Random rnd = new Random();
             int direction;
             direction = rnd.nextInt(4);
             switch (direction){
                 case 0:
                     if (pointY != 1) {
-                        if (labyrinthObject[pointX][pointY - 2].equals("wall")) {
-                            labyrinthObject[pointX][pointY - 1] = "empty";
+                        if (labyrinthObject[pointX][pointY - 2].equals(MaterialType.WALL)) {
+                            labyrinthObject[pointX][pointY - 1] = MaterialType.EMPTY;
                             pointY -= 2;
                             //u
                         }
                     }
                 case 1:
                     if (pointY != labyrinthSize - 2) {
-                        if (labyrinthObject[pointX][pointY + 2].equals("wall")) {
-                            labyrinthObject[pointX][pointY + 1] = "empty";
+                        if (labyrinthObject[pointX][pointY + 2].equals(MaterialType.WALL)) {
+                            labyrinthObject[pointX][pointY + 1] = MaterialType.EMPTY;
                             pointY += 2;
                             //d
                         }
                     }
                 case 2:
                     if (pointX != 1) {
-                        if (labyrinthObject[pointX - 2][pointY].equals("wall")) {
-                            labyrinthObject[pointX - 1][pointY] = "empty";
+                        if (labyrinthObject[pointX - 2][pointY].equals(MaterialType.WALL)) {
+                            labyrinthObject[pointX - 1][pointY] = MaterialType.EMPTY;
                             pointX -= 2;
                             //l
                         }
                     }
                 case 3:
                     if (pointX != labyrinthSize - 2) {
-                        if (labyrinthObject[pointX + 2][pointY].equals("wall")) {
-                            labyrinthObject[pointX + 1][pointY] = "empty";
+                        if (labyrinthObject[pointX + 2][pointY].equals(MaterialType.WALL)) {
+                            labyrinthObject[pointX + 1][pointY] = MaterialType.EMPTY;
                             pointX += 2;
                             //r
                         }
                     }
             }
-            labyrinthObject[pointX][pointY] = "empty";
+            labyrinthObject[pointX][pointY] = MaterialType.EMPTY;
             dig();
         }else if (isAbleDig()){
             pointX = randomPos();
@@ -91,7 +119,7 @@ public class LabyrinthSystem {
         for (int i = 0;i < labyrinthSize;i++){
             for (int j = 0;j < labyrinthSize;j++){
                 if (i % 2 != 0 && j % 2 != 0){
-                    if (!labyrinthObject[i][j].equals("empty")){
+                    if (!labyrinthObject[i][j].equals(MaterialType.EMPTY)){
                         cnt++;
                     }
                 }
@@ -102,22 +130,22 @@ public class LabyrinthSystem {
 
     private boolean isAbleContinueDig(){
         if (pointY != 1){
-            if (labyrinthObject[pointX][pointY - 2].equals("wall")){
+            if (labyrinthObject[pointX][pointY - 2].equals(MaterialType.WALL)){
                 return true;
             }
         }
         if (pointY != labyrinthSize - 2){
-            if (labyrinthObject[pointX][pointY + 2].equals("wall")){
+            if (labyrinthObject[pointX][pointY + 2].equals(MaterialType.WALL)){
                 return true;
             }
         }
         if (pointX != 1){
-            if (labyrinthObject[pointX - 2][pointY].equals("wall")){
+            if (labyrinthObject[pointX - 2][pointY].equals(MaterialType.WALL)){
                 return true;
             }
         }
         if (pointX != labyrinthSize - 2){
-            if (labyrinthObject[pointX + 2][pointY].equals("wall")){
+            if (labyrinthObject[pointX + 2][pointY].equals(MaterialType.WALL)){
                 return true;
             }
         }
@@ -132,13 +160,13 @@ public class LabyrinthSystem {
             int x = rnd.nextInt(labyrinthSize - 2) + 1;
             int y = rnd.nextInt(labyrinthSize - 2) + 1;
             if (player){
-                if (!labyrinthObject[x][y].equals("wall")){
-                    labyrinthObject[x][y] = "player";
+                if (!labyrinthObject[x][y].equals(MaterialType.WALL)){
+                    labyrinthObject[x][y] = MaterialType.PLAYER;
                     player = false;
                 }
             }else {
-                if (!labyrinthObject[x][y].equals("wall") && !labyrinthObject[x][y].equals("player")){
-                    labyrinthObject[x][y] = "goal";
+                if (!labyrinthObject[x][y].equals(MaterialType.WALL) && !labyrinthObject[x][y].equals(MaterialType.PLAYER)){
+                    labyrinthObject[x][y] = MaterialType.GOAL;
                     goal = false;
                 }
             }
@@ -164,13 +192,13 @@ public class LabyrinthSystem {
             pw.println("");
             for (int x = 0; x < labyrinthSize; x++) {
                 switch (labyrinthObject[x][y]) {
-                    case "wall":
+                    case WALL:
                         pw.print("##");
                         break;
-                    case "player":
+                    case PLAYER:
                         pw.print("PP");
                         break;
-                    case "goal":
+                    case GOAL:
                         pw.print("GG");
                         break;
                     default:
@@ -183,13 +211,13 @@ public class LabyrinthSystem {
     }
 
     public Boolean checkWall(int i,int j){
-        return labyrinthObject[i][j].equals("wall");
+        return labyrinthObject[i][j].equals(MaterialType.WALL);
     }
 
     public int[] getplayerPoint() {
         for (int i = 0;i < labyrinthSize;i++){
             for (int j = 0;j < labyrinthSize;j++){
-                if (labyrinthObject[i][j].equals("player")){
+                if (labyrinthObject[i][j].equals(MaterialType.PLAYER)){
                     return new int[]{i, j};
                 }
             }
@@ -197,10 +225,38 @@ public class LabyrinthSystem {
         return null;
     }
 
+    public ViewDirection setPlayerViewDirection(SpinDirection spin,ViewDirection view){
+        if (spin == SpinDirection.RIGHT){
+            switch (view){
+                case NORTH:
+                    playerView = ViewDirection.WEST;
+                case WEST:
+                    playerView = ViewDirection.SOUTH;
+                case SOUTH:
+                    playerView = ViewDirection.EAST;
+                case EAST:
+                    playerView = ViewDirection.NORTH;
+            }
+        }else {
+            switch (view){
+                case NORTH:
+                    playerView = ViewDirection.EAST;
+                case EAST:
+                    playerView = ViewDirection.SOUTH;
+                case SOUTH:
+                    playerView = ViewDirection.WEST;
+                case WEST:
+                    playerView = ViewDirection.NORTH;
+            }
+        }
+        return null;
+    }
+
+
 //    public int[] getGoalPoint() {
 //        for (int i = 0;i < labyrinthSize;i++){
 //            for (int j = 0;j < labyrinthSize;j++){
-//                if (labyrinthObject[i][j].equals("goal")){
+//                if (labyrinthObject[i][j].equals(MaterialType.GOAL)){
 //                    return new int[]{i, j};
 //                }
 //            }
