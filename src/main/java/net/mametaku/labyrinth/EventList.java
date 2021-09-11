@@ -35,21 +35,20 @@ public class EventList implements Listener {
                 } else if(matchName(clickedItem,"ランキング")){
                     new LabyrinthGUI().rankingMenu(player);
                 } else if (matchName(clickedItem,"上")){
-                    new LabyrinthGUI().move(player, LabyrinthSystem.MoveDirection.UP);
-                } else if (matchName(clickedItem,"下")){
-                    new LabyrinthGUI().move(player, LabyrinthSystem.MoveDirection.DOWN);
-                } else if (matchName(clickedItem,"右")){
-                    new LabyrinthGUI().move(player, LabyrinthSystem.MoveDirection.RIGHT);
-                } else if (matchName(clickedItem,"左")){
-                    new LabyrinthGUI().move(player, LabyrinthSystem.MoveDirection.LEFT);
-                } else if (matchName(clickedItem,"右に回転")){
+                    LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                    labyrinth.updateViewDirection();
+                    new LabyrinthGUI().move(player);
+                }else if (matchName(clickedItem,"右に回転")){
                     LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
                     labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.RIGHT,labyrinth.playerView);
+                    labyrinth.updateViewDirection();
+                    labyrinth.updateMap(player);
                 } else if (matchName(clickedItem,"左に回転")){
                     LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
                     labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.LEFT,labyrinth.playerView);
+                    labyrinth.updateViewDirection();
+                    labyrinth.updateMap(player);
                 }
-
             }
         }
     }

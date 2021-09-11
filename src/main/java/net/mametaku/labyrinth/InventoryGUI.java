@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -56,6 +57,9 @@ public class InventoryGUI {
         ItemStack item=inv.getItem(slot);
         if(item==null)return;
         item.addUnsafeEnchantment(Enchantment.LUCK,1);
+        final ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        item.setItemMeta(itemMeta);
         inv.setItem(slot,item);
     }
 

@@ -2,12 +2,17 @@ package net.mametaku.labyrinth;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.Random;
 
-import static net.mametaku.labyrinth.Main.config;
-import static net.mametaku.labyrinth.Main.dataFolder;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static net.mametaku.labyrinth.LabyrinthSystem.MaterialType.FRONTEMPTY;
+import static net.mametaku.labyrinth.LabyrinthSystem.MaterialType.WALL;
+import static net.mametaku.labyrinth.Main.*;
+import static net.mametaku.labyrinth.Main.labyrinthGameInventory;
 
 public class LabyrinthSystem {
 
@@ -19,16 +24,10 @@ public class LabyrinthSystem {
 
     public enum MaterialType{
         EMPTY,
+        FRONTEMPTY,
         WALL,
         PLAYER,
         GOAL,
-    }
-
-    public enum MoveDirection{
-        UP,
-        DOWN,
-        RIGHT,
-        LEFT,
     }
 
     public enum ViewDirection{
@@ -214,6 +213,10 @@ public class LabyrinthSystem {
         return labyrinthObject[i][j].equals(MaterialType.WALL);
     }
 
+    public ViewDirection getPlayerViewDirection(){
+        return playerView;
+    }
+
     public int[] getplayerPoint() {
         for (int i = 0;i < labyrinthSize;i++){
             for (int j = 0;j < labyrinthSize;j++){
@@ -225,34 +228,102 @@ public class LabyrinthSystem {
         return null;
     }
 
+    public void updateViewDirection(){
+        LabyrinthSystem.MaterialType[][] map = labyrinthObject;
+        for (int i = 0;i < labyrinthSize;i++){
+            for (int j = 0;j < labyrinthSize;j++) {
+                if (map[i][j].equals(LabyrinthSystem.MaterialType.PLAYER)){
+                    switch (playerView){
+                        case NORTH:
+                            if (!map[i][j - 1].equals(WALL)){
+                                map[i][j - 1] = FRONTEMPTY;
+                            }
+                        case SOUTH:
+                            if (!map[i][j + 1].equals(WALL)){
+                                map[i][j + 1] = FRONTEMPTY;
+                            }
+                        case WEST:
+                            if (!map[i - 1][j].equals(WALL)){
+                                map[i - 1][j] = FRONTEMPTY;
+                            }
+                        case EAST:
+                            if (!map[i + 1][j].equals(WALL)){
+                                map[i + 1][j] = FRONTEMPTY;
+                            }
+                    }
+                }
+            }
+        }
+    }
+
     public ViewDirection setPlayerViewDirection(SpinDirection spin,ViewDirection view){
         if (spin == SpinDirection.RIGHT){
+            Bukkit.broadcastMessage("start");
             switch (view){
                 case NORTH:
-                    playerView = ViewDirection.WEST;
-                case WEST:
-                    playerView = ViewDirection.SOUTH;
-                case SOUTH:
                     playerView = ViewDirection.EAST;
+                    break;
                 case EAST:
+                    playerView = ViewDirection.SOUTH;
+                    break;
+                case SOUTH:
+                    playerView = ViewDirection.WEST;
+                    break;
+                case WEST:
                     playerView = ViewDirection.NORTH;
+                    break;
             }
         }else {
             switch (view){
                 case NORTH:
-                    playerView = ViewDirection.EAST;
-                case EAST:
-                    playerView = ViewDirection.SOUTH;
-                case SOUTH:
                     playerView = ViewDirection.WEST;
+                    break;
                 case WEST:
+                    playerView = ViewDirection.SOUTH;
+                    break;
+                case SOUTH:
+                    playerView = ViewDirection.EAST;
+                    break;
+                case EAST:
                     playerView = ViewDirection.NORTH;
+                    break;
             }
         }
         return null;
     }
 
-
+    public void updateMap(Player player){
+        LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+        InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
+        LabyrinthSystem.MaterialType[][] map = labyrinth.labyrinthObject;
+        int[] playerPoint = labyrinth.getplayerPoint();
+        int a = playerPoint[0];
+        int b = playerPoint[1];
+        int x = min(max(0,a-2), labyrinth.labyrinthSize - 6);
+        int y = min(max(0,b-2), labyrinth.labyrinthSize - 6);
+        for(int ix=0;ix<6;ix++){
+            for(int iy=0;iy<6;iy++){
+                switch (map[x+ix][y+iy]){
+                    case WALL:
+                        inv.setItem(ix+9*iy+3,Material.DEEPSLATE_BRICKS," ");
+                        break;
+                    case PLAYER:
+                        inv.setItem(ix+9*iy+3,Material.PLAYER_HEAD,"PLAYER");
+                        break;
+                    case GOAL:
+                        inv.setItem(ix+9*iy+3,Material.BELL,"GOAL");
+                        break;
+                    case EMPTY:
+                        inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
+                        break;
+                    case FRONTEMPTY:
+                        inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
+                        inv.enchantItem(ix+9*iy+3);
+                        break;
+                }
+            }
+        }
+    }
 //    public int[] getGoalPoint() {
 //        for (int i = 0;i < labyrinthSize;i++){
 //            for (int j = 0;j < labyrinthSize;j++){
