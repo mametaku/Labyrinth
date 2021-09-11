@@ -44,6 +44,7 @@ public class LabyrinthGUI {
     public void gameMenu(Player player){
         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
+        labyrinth.playerView = LabyrinthSystem.ViewDirection.NORTH;
         labyrinth.updateMap(player);
         inv.setItem(1,Material.SPRUCE_SAPLING," ",1001);
         inv.setItem(27,Material.SPRUCE_SAPLING,"左に回転",1002);

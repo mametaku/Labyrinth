@@ -296,7 +296,6 @@ public class LabyrinthSystem {
         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         LabyrinthSystem.MaterialType[][] map = labyrinth.labyrinthObject;
-        labyrinth.playerView = LabyrinthSystem.ViewDirection.NORTH;
         int[] playerPoint = labyrinth.getplayerPoint();
         int a = playerPoint[0];
         int b = playerPoint[1];
@@ -340,6 +339,7 @@ public class LabyrinthSystem {
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         LabyrinthSystem.MaterialType[][] map = labyrinth.labyrinthObject;
         LabyrinthSystem.ViewDirection view = labyrinth.playerView;
+        Bukkit.broadcastMessage(""+view);
         updateMap(player);
         int[] playerPoint = new int[2];
         LOOP:
