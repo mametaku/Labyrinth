@@ -11,7 +11,8 @@ import java.util.UUID;
 public class Main extends JavaPlugin {
 
     public static Config config;
-    public static HashMap<UUID, LabyrinthSystem> labyrinthgame=new HashMap<>();
+    public static HashMap<UUID, LabyrinthSystem> labyrinthGame=new HashMap<>();
+    public static HashMap<LabyrinthSystem,InventoryGUI> labyrinthGameInventory=new HashMap<>();
     public static List<UUID> currentPlayer=new ArrayList<>();
     public static boolean playable;
     public static MySQLManager mySQLManager;

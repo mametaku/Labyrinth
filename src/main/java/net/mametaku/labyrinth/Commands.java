@@ -7,7 +7,8 @@ import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
-import static net.mametaku.labyrinth.Main.currentPlayer;
+import static net.mametaku.labyrinth.Main.*;
+import static net.mametaku.labyrinth.Main.title;
 
 public class Commands implements CommandExecutor {
 
@@ -28,6 +29,8 @@ public class Commands implements CommandExecutor {
             }
         }
         currentPlayer.add(player.getUniqueId());
+        labyrinthGame.put(player.getUniqueId(),new LabyrinthSystem());
+        labyrinthGameInventory.put(labyrinthGame.get(player.getUniqueId()),new InventoryGUI(27,title));
         new LabyrinthGUI().startMenu(player);
         return false;
     }

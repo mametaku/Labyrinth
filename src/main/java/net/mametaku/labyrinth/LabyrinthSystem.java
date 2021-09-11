@@ -1,30 +1,37 @@
 package net.mametaku.labyrinth;
 
+import org.bukkit.Bukkit;
+
 import java.io.*;
 import java.util.Random;
 
+import static net.mametaku.labyrinth.Main.config;
 import static net.mametaku.labyrinth.Main.dataFolder;
 
 public class LabyrinthSystem {
 
     private static int pointX; //ブロックを置いたり消したりする目印。
     private static int pointY;
-    private static final int labyrinthSize = 15;
+    public int labyrinthSize = config.getInt("labyrinthSize");
     public String[][] labyrinthObject = new String[labyrinthSize][labyrinthSize];
 
     public LabyrinthSystem() {
-        for (int i = 0; i < labyrinthSize; i++) {
-            for (int j = 0; j < labyrinthSize; j++) {
-                labyrinthObject[i][j] = "wall";
+        if (labyrinthSize % 2 != 0 && 5 <= labyrinthSize) {
+            for (int i = 0; i < labyrinthSize; i++) {
+                for (int j = 0; j < labyrinthSize; j++) {
+                    labyrinthObject[i][j] = "wall";
+                }
             }
-        }
-        pointX = randomPos();
-        pointY = randomPos();
-        labyrinthObject[pointX][pointY] = "empty";
+            pointX = randomPos();
+            pointY = randomPos();
+            labyrinthObject[pointX][pointY] = "empty";
 
-        dig();
-        setStartAndGoal();
-        show();
+            dig();
+            setplayerAndGoal();
+            show();
+        } else {
+            Bukkit.getLogger().info("縦・横共に5以上の奇数で作成してください。");
+        }
     }
 
     private void dig() {
@@ -76,7 +83,7 @@ public class LabyrinthSystem {
     }
 
     int randomPos() { //x,y座標共に奇数なランダムな座標を返す
-        return 1 + 2 * (int) Math.floor((Math.random() * (LabyrinthSystem.labyrinthSize - 1)) / 2);
+        return 1 + 2 * (int) Math.floor((Math.random() * (labyrinthSize - 1)) / 2);
     }
 
     private boolean isAbleDig() { //まだ掘るところがあるか確かめる
@@ -117,20 +124,20 @@ public class LabyrinthSystem {
         return false;
     }
 
-    private void setStartAndGoal(){
-        boolean start = true;
+    private void setplayerAndGoal(){
+        boolean player = true;
         boolean goal = true;
         Random rnd = new Random();
-        while(start || goal){
+        while(player || goal){
             int x = rnd.nextInt(labyrinthSize - 2) + 1;
             int y = rnd.nextInt(labyrinthSize - 2) + 1;
-            if (start){
+            if (player){
                 if (!labyrinthObject[x][y].equals("wall")){
-                    labyrinthObject[x][y] = "start";
-                    start = false;
+                    labyrinthObject[x][y] = "player";
+                    player = false;
                 }
             }else {
-                if (!labyrinthObject[x][y].equals("wall") && !labyrinthObject[x][y].equals("start")){
+                if (!labyrinthObject[x][y].equals("wall") && !labyrinthObject[x][y].equals("player")){
                     labyrinthObject[x][y] = "goal";
                     goal = false;
                 }
@@ -160,8 +167,8 @@ public class LabyrinthSystem {
                     case "wall":
                         pw.print("##");
                         break;
-                    case "start":
-                        pw.print("SS");
+                    case "player":
+                        pw.print("PP");
                         break;
                     case "goal":
                         pw.print("GG");
@@ -175,10 +182,14 @@ public class LabyrinthSystem {
         pw.close();
     }
 
-    public int[] getStartPoint() {
+    public Boolean checkWall(int i,int j){
+        return labyrinthObject[i][j].equals("wall");
+    }
+
+    public int[] getplayerPoint() {
         for (int i = 0;i < labyrinthSize;i++){
             for (int j = 0;j < labyrinthSize;j++){
-                if (labyrinthObject[i][j].equals("start")){
+                if (labyrinthObject[i][j].equals("player")){
                     return new int[]{i, j};
                 }
             }
@@ -186,14 +197,14 @@ public class LabyrinthSystem {
         return null;
     }
 
-    public int[] getGoalPoint() {
-        for (int i = 0;i < labyrinthSize;i++){
-            for (int j = 0;j < labyrinthSize;j++){
-                if (labyrinthObject[i][j].equals("goal")){
-                    return new int[]{i, j};
-                }
-            }
-        }
-        return null;
-    }
+//    public int[] getGoalPoint() {
+//        for (int i = 0;i < labyrinthSize;i++){
+//            for (int j = 0;j < labyrinthSize;j++){
+//                if (labyrinthObject[i][j].equals("goal")){
+//                    return new int[]{i, j};
+//                }
+//            }
+//        }
+//        return null;
+//    }
 }

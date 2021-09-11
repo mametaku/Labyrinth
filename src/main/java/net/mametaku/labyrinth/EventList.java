@@ -7,8 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import static net.mametaku.labyrinth.Main.currentPlayer;
-import static net.mametaku.labyrinth.Main.title;
+import static net.mametaku.labyrinth.Main.*;
 
 public class EventList implements Listener {
 
@@ -30,10 +29,20 @@ public class EventList implements Listener {
             if (currentPlayer.contains(e.getWhoClicked().getUniqueId())) {
                 int slot = e.getSlot();
                 if (matchName(clickedItem, "スタート")) {
+                    labyrinthGameInventory.put(labyrinthGame.get(player.getUniqueId()),new InventoryGUI(54,title));
                     new LabyrinthGUI().gameMenu(player);
                 } else if(matchName(clickedItem,"ランキング")){
                     new LabyrinthGUI().rankingMenu(player);
+                } else if (matchName(clickedItem,"上")){
+                    new LabyrinthGUI().move(player,"up");
+                } else if (matchName(clickedItem,"下")){
+                    new LabyrinthGUI().move(player,"down");
+                } else if (matchName(clickedItem,"右")){
+                    new LabyrinthGUI().move(player,"right");
+                } else if (matchName(clickedItem,"左")){
+                    new LabyrinthGUI().move(player,"left");
                 }
+
             }
         }
     }
