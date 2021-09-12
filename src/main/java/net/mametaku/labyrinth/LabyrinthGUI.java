@@ -1,17 +1,12 @@
 package net.mametaku.labyrinth;
 
-import org.bukkit.Bukkit;
+import net.mametaku.labyrinth.gamesystem.LabyrinthSystem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Arrays;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static net.mametaku.labyrinth.LabyrinthSystem.MaterialType.*;
 import static net.mametaku.labyrinth.Main.*;
 
 public class LabyrinthGUI {
@@ -23,7 +18,7 @@ public class LabyrinthGUI {
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         inv.setItem(10,Material.GREEN_CONCRETE,"スタート","ここをクリックで始まります！");
         inv.setItem(12,Material.BOOK,"ゲーム説明","テスト","テスト","テスト");
-        inv.setItem(14,Material.SPRUCE_SAPLING,"ランキング",1000,"ここをクリックでランキングを表示！");
+        inv.setItem(14,Material.SPRUCE_SAPLING,"ランキング",config.getInt("Rankingiconcmd"),"ここをクリックでランキングを表示！");
         inv.setItem(16,Material.RED_CONCRETE,"ゲーム終了","ここをクリックで画面を閉じます！");
         inv.openInventory(player);
     }
@@ -41,18 +36,28 @@ public class LabyrinthGUI {
         inv.openInventory(player);
     }
 
+    public void itemMenu(Player player){
+        LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+        InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
+        for (int i=45;i<54;i++){
+            inv.setItem(i,Material.PURPLE_STAINED_GLASS_PANE,"");
+        }
+        inv.openInventory(player);
+    }
+
+
     public void gameMenu(Player player){
         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         labyrinth.playerView = LabyrinthSystem.ViewDirection.NORTH;
         labyrinth.updateMap(player);
-        inv.setItem(1,Material.SPRUCE_SAPLING," ",1001);
-        inv.setItem(27,Material.SPRUCE_SAPLING,"左に回転",1002);
-        inv.setItem(28,Material.SPRUCE_SAPLING,"上",1003);
-        inv.setItem(29,Material.SPRUCE_SAPLING,"右に回転",1004);
-        inv.setItem(37,Material.END_CRYSTAL,"決定・攻撃",1006);
-        inv.setItem(45,Material.SPRUCE_SAPLING,"情報",1008);
-        inv.setItem(47,Material.SPRUCE_SAPLING,"ログ",1010);
+        inv.setItem(1,Material.matchMaterial(config.getString("Material"))," ",1);
+        inv.setItem(27,Material.matchMaterial(config.getString("Material")),"左に回転",config.getInt("Leftspinarrowcmd"));
+        inv.setItem(28,Material.matchMaterial(config.getString("Material")),"上",config.getInt("Uparrowcmd"));
+        inv.setItem(29,Material.matchMaterial(config.getString("Material")),"右に回転",config.getInt("Rightspinarrowcmd"));
+        inv.setItem(37,Material.matchMaterial(config.getString("Material")),"決定・攻撃",config.getInt("Selectandattackiconcmd"));
+        inv.setItem(45,Material.matchMaterial(config.getString("Material")),"情報",config.getInt("Playerstatusiconcmd"));
+        inv.setItem(47,Material.matchMaterial(config.getString("Material")),"ログ",config.getInt("Logiconcmd"));
         inv.openInventory(player);
     }
 }

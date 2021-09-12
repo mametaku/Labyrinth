@@ -1,6 +1,6 @@
 package net.mametaku.labyrinth;
 
-import org.bukkit.Bukkit;
+import net.mametaku.labyrinth.gamesystem.LabyrinthSystem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

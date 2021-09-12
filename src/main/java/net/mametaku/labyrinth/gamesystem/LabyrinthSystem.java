@@ -1,15 +1,15 @@
-package net.mametaku.labyrinth;
+package net.mametaku.labyrinth.gamesystem;
 
+import net.mametaku.labyrinth.InventoryGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.io.*;
 import java.util.Random;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static net.mametaku.labyrinth.LabyrinthSystem.MaterialType.*;
+import static net.mametaku.labyrinth.gamesystem.LabyrinthSystem.MaterialType.*;
 import static net.mametaku.labyrinth.Main.*;
 import static net.mametaku.labyrinth.Main.labyrinthGameInventory;
 

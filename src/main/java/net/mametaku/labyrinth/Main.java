@@ -1,5 +1,6 @@
 package net.mametaku.labyrinth;
 
+import net.mametaku.labyrinth.gamesystem.LabyrinthSystem;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

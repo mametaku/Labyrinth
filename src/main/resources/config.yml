@@ -2,7 +2,24 @@ canPlay: true
 labyrinthSize: 21
 
 Material: "SPRUCE_SAPLING"
-gameuiicon:
-  uparrow:
-    cmd:
-  rightarrow:
+Uparrowcmd: 1000
+Rightspinarrowcmd: 1001
+Leftspinarrowcmd: 1002
+Selectandattackiconcmd: 1003
+Playerstatusiconcmd: 1004
+Logiconcmd: 1005
+Rankingiconcmd: 1006
+#WEW
+#WEW
+#WEW
+View1: 1100
+#WWW
+#WEE
+#WEW
+View2:
+#WWW
+#EEW
+#WEW
+View3:
+
+

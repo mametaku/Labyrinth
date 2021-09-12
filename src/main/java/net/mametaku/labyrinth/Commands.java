@@ -1,11 +1,10 @@
 package net.mametaku.labyrinth;
 
+import net.mametaku.labyrinth.gamesystem.LabyrinthSystem;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.io.IOException;
 
 import static net.mametaku.labyrinth.Main.*;
 import static net.mametaku.labyrinth.Main.title;
