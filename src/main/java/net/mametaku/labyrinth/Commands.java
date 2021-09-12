@@ -1,6 +1,7 @@
 package net.mametaku.labyrinth;
 
 import net.mametaku.labyrinth.gamesystem.LabyrinthSystem;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -2,17 +2,21 @@ canPlay: true
 labyrinthSize: 21
 
 Material: "SPRUCE_SAPLING"
-Uparrowcmd: 1000
-Rightspinarrowcmd: 1001
-Leftspinarrowcmd: 1002
-Selectandattackiconcmd: 1003
-Playerstatusiconcmd: 1004
-Logiconcmd: 1005
-Rankingiconcmd: 1006
+Leftspinarrowcmd: 600
+Logiconcmd: 601
+Rightspinarrowcmd: 602
+Selectandattackiconcmd: 603
+Settungiconcmd: 604
+Soundiconcmd: 605
+Trophyiconcmd: 607
+Playerstatusiconcmd: 606
+Uparrowcmd: 608
+itembagiconcmd: 609
+Rankingiconcmd: 700
 #WEW
 #WEW
 #WEW
-View1: 1100
+View1:
 #WWW
 #WEE
 #WEW

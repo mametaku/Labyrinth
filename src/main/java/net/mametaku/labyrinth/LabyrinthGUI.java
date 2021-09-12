@@ -55,9 +55,12 @@ public class LabyrinthGUI {
         inv.setItem(27,Material.matchMaterial(config.getString("Material")),"左に回転",config.getInt("Leftspinarrowcmd"));
         inv.setItem(28,Material.matchMaterial(config.getString("Material")),"上",config.getInt("Uparrowcmd"));
         inv.setItem(29,Material.matchMaterial(config.getString("Material")),"右に回転",config.getInt("Rightspinarrowcmd"));
+        inv.setItem(36,Material.matchMaterial(config.getString("Material")),"持ち物",config.getInt("itembagiconcmd"));
         inv.setItem(37,Material.matchMaterial(config.getString("Material")),"決定・攻撃",config.getInt("Selectandattackiconcmd"));
+        inv.setItem(38,Material.matchMaterial(config.getString("Material")),"ログ",config.getInt("Logiconcmd"));
         inv.setItem(45,Material.matchMaterial(config.getString("Material")),"情報",config.getInt("Playerstatusiconcmd"));
-        inv.setItem(47,Material.matchMaterial(config.getString("Material")),"ログ",config.getInt("Logiconcmd"));
+        inv.setItem(46,Material.matchMaterial(config.getString("Material")),"トロフィー",config.getInt("Trophyiconcmd"));
+        inv.setItem(47,Material.matchMaterial(config.getString("Material")),"設定",config.getInt("Settungiconcmd"));
         inv.openInventory(player);
     }
 }

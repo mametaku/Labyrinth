@@ -1,12 +1,18 @@
 package net.mametaku.labyrinth.gamesystem;
 
 public class CharacterData {
-    private int max_HP;
-    private int HP;
-    private int max_MP;
-    private int MP;
-    private int AP;//attackPoint
-    private int DP;//defencePoint
+    public int Max_HP;
+    public int HP;
+    public int Max_MP;
+    public int MP;
+    public int AP;//attackPoint
+    public int DP;//defencePoint
+    public int SP;//speedPoint
+    public int MONEY;
+    public Data.Spell[] Having_SPELL;
+    public Data.StatusAilment[] SA;
+    public Data.Job JOB;
+
 
 
 }

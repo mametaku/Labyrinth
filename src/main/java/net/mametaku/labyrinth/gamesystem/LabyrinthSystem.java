@@ -339,31 +339,10 @@ public class LabyrinthSystem {
                 }
             }
         }
-        for(int ix=0;ix<6;ix++){
-            for(int iy=0;iy<6;iy++){
-                switch (map[x+ix][y+iy]){
-                    case WALL:
-                        inv.setItem(ix+9*iy+3,Material.DEEPSLATE_BRICKS," ");
-                        break;
-                    case PLAYER:
-                        inv.setItem(ix+9*iy+3,Material.PLAYER_HEAD,"PLAYER");
-                        break;
-                    case GOAL:
-                        inv.setItem(ix+9*iy+3,Material.BELL,"GOAL");
-                        break;
-                    case EMPTY:
-                        inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
-                        break;
-                    case FRONTEMPTY:
-                        inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
-                        inv.enchantItem(ix+9*iy+3);
-                        break;
-                }
-            }
-        }
+        drawMap(playerPoint,map,inv);
     }
 
-    public void moveMap(Player player){
+    public void movePlayer(Player player){
         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         MaterialType[][] map = labyrinth.labyrinthObject;
@@ -413,8 +392,13 @@ public class LabyrinthSystem {
                     }
                 }
             }
+            drawMap(playerPoint,map,inv);
         }
         updateMap(player);
+        labyrinthGameInventory.put(labyrinth,inv);
+    }
+
+    public void drawMap(int[] playerPoint,MaterialType[][] map,InventoryGUI inv){
         int a = playerPoint[0];
         int b = playerPoint[1];
         int x = min(max(0,a-2), labyrinthSize - 6);
@@ -441,7 +425,6 @@ public class LabyrinthSystem {
                 }
             }
         }
-        labyrinthGameInventory.put(labyrinth,inv);
     }
 //    public int[] getGoalPoint() {
 //        for (int i = 0;i < labyrinthSize;i++){

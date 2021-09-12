@@ -29,7 +29,6 @@ public class Main extends JavaPlugin {
         playable=config.getBoolean("canPlay");
         getCommand("labyrinth").setExecutor(new Commands());
         new EventList(this);
-
     }
 
     @Override
