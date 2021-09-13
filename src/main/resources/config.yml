@@ -1,18 +1,10 @@
 canPlay: true
+
+#奇数で設定してください。
 labyrinthSize: 21
 
 Material: "SPRUCE_SAPLING"
-Leftspinarrowcmd: 600
-Logiconcmd: 601
-Rightspinarrowcmd: 602
-Selectandattackiconcmd: 603
-Settungiconcmd: 604
-Soundiconcmd: 605
-Trophyiconcmd: 607
-Playerstatusiconcmd: 606
-Uparrowcmd: 608
-itembagiconcmd: 609
-Rankingiconcmd: 700
+
 #WEW
 #WEW
 #WEW
@@ -26,4 +18,21 @@ View2:
 #WEW
 View3:
 
-
+Leftspinarrowcmd: 600
+Logiconcmd: 601
+Rightspinarrowcmd: 602
+Selectandattackiconcmd: 603
+Settungiconcmd: 604
+Soundiconcmd: 605
+Rankingiconcmd: 607
+Playerstatusiconcmd: 606
+Uparrowcmd: 608
+itembagiconcmd: 609
+Treeiconcmd: 610
+Weaponshopiconcmd: 611
+Welliconcmd: 612
+Itemshopiconcmd: 613
+Inniconcmd: 614
+Helpiconcmd: 615
+Groundiconcmd: 616
+Dungeoniconcmd: 617

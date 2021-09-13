@@ -31,20 +31,26 @@ public class EventList implements Listener {
                 int slot = e.getSlot();
                 if (matchName(clickedItem, "スタート")) {
                     labyrinthGameInventory.put(labyrinthGame.get(player.getUniqueId()),new InventoryGUI(54,title));
-                    new LabyrinthGUI().gameMenu(player);
+                    if (labyrinthGame.get(player.getUniqueId()).playerLocate.equals(LabyrinthSystem.PlayerLocate.DUNGEON)){
+                        new LabyrinthGUI().labyrinthMenu(player);
+                    }
+                    new LabyrinthGUI().townMenu(player);
                 } else if(matchName(clickedItem,"ランキング")){
                     new LabyrinthGUI().rankingMenu(player);
                 } else if (matchName(clickedItem,"上")){
                     LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                    if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
                     labyrinth.updateViewDirection();
                     labyrinth.movePlayer(player);
                 }else if (matchName(clickedItem,"右に回転")){
                     LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                    if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
                     labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.RIGHT,labyrinth.playerView);
                     labyrinth.updateViewDirection();
                     labyrinth.updateMap(player);
                 } else if (matchName(clickedItem,"左に回転")){
                     LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                    if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
                     labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.LEFT,labyrinth.playerView);
                     labyrinth.updateViewDirection();
                     labyrinth.updateMap(player);
