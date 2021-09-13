@@ -9,9 +9,8 @@ import java.util.Random;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static net.mametaku.labyrinth.gamesystem.LabyrinthSystem.MaterialType.*;
 import static net.mametaku.labyrinth.Main.*;
-import static net.mametaku.labyrinth.Main.labyrinthGameInventory;
+import static net.mametaku.labyrinth.gamesystem.LabyrinthSystem.MaterialType.*;
 
 public class LabyrinthSystem {
 
@@ -19,6 +18,7 @@ public class LabyrinthSystem {
     private static int pointY;
     public int labyrinthSize = config.getInt("labyrinthSize");
     public MaterialType[][] labyrinthObject = new MaterialType[labyrinthSize][labyrinthSize];
+    public  ResearchFlag[][] labyrinthFlag = new ResearchFlag[labyrinthSize][labyrinthSize];
     public ViewDirection playerView;
 
     public enum MaterialType{
@@ -27,6 +27,11 @@ public class LabyrinthSystem {
         WALL,
         PLAYER,
         GOAL,
+    }
+
+    public enum ResearchFlag{
+        RESEARCH,//調査
+        NOT_RESEARCH,//未調査
     }
 
     public enum ViewDirection{
@@ -46,6 +51,7 @@ public class LabyrinthSystem {
             for (int i = 0; i < labyrinthSize; i++) {
                 for (int j = 0; j < labyrinthSize; j++) {
                     labyrinthObject[i][j] = MaterialType.WALL;
+                    labyrinthFlag[i][j] = ResearchFlag.NOT_RESEARCH;
                 }
             }
             pointX = randomPos();
@@ -303,10 +309,6 @@ public class LabyrinthSystem {
             }
         }
         int[] playerPoint = labyrinth.getplayerPoint();
-        int a = playerPoint[0];
-        int b = playerPoint[1];
-        int x = min(max(0,a-2), labyrinth.labyrinthSize - 6);
-        int y = min(max(0,b-2), labyrinth.labyrinthSize - 6);
         for (int i = 0;i < labyrinth.labyrinthSize;i++){
             for (int j = 0;j < labyrinth.labyrinthSize;j++) {
                 if (map[i][j].equals(LabyrinthSystem.MaterialType.PLAYER)){
@@ -339,7 +341,7 @@ public class LabyrinthSystem {
                 }
             }
         }
-        drawMap(playerPoint,map,inv);
+        drawMap(playerPoint,map,labyrinth,inv);
     }
 
     public void movePlayer(Player player){
@@ -392,40 +394,64 @@ public class LabyrinthSystem {
                     }
                 }
             }
-            drawMap(playerPoint,map,inv);
+            drawMap(playerPoint,map,labyrinth,inv);
         }
         updateMap(player);
         labyrinthGameInventory.put(labyrinth,inv);
     }
 
-    public void drawMap(int[] playerPoint,MaterialType[][] map,InventoryGUI inv){
+    public void drawMap(int[] playerPoint,MaterialType[][] map,LabyrinthSystem labyrinth,InventoryGUI inv){
         int a = playerPoint[0];
         int b = playerPoint[1];
         int x = min(max(0,a-2), labyrinthSize - 6);
         int y = min(max(0,b-2), labyrinthSize - 6);
+        ResearchFlag[][] rf = labyrinth.labyrinthFlag;
         for(int ix=0;ix<6;ix++){
             for(int iy=0;iy<6;iy++){
                 switch (map[x+ix][y+iy]){
                     case WALL:
                         inv.setItem(ix+9*iy+3,Material.DEEPSLATE_BRICKS," ");
+//                        if (rf[x][y].equals(ResearchFlag.NOT_RESEARCH)){
+//                            inv.setItem(ix+9*iy+3,Material.PURPLE_STAINED_GLASS_PANE," ");
+//                        }
                         break;
                     case PLAYER:
                         inv.setItem(ix+9*iy+3,Material.PLAYER_HEAD,"PLAYER");
                         break;
                     case GOAL:
                         inv.setItem(ix+9*iy+3,Material.BELL,"GOAL");
+//                        if (rf[x][y].equals(ResearchFlag.NOT_RESEARCH)){
+//                            inv.setItem(ix+9*iy+3,Material.PURPLE_STAINED_GLASS_PANE," ");
+//                        }
                         break;
                     case EMPTY:
                         inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
+//                        if (rf[x][y].equals(ResearchFlag.NOT_RESEARCH)){
+//                            inv.setItem(ix+9*iy+3,Material.PURPLE_STAINED_GLASS_PANE," ");
+//                        }
                         break;
                     case FRONTEMPTY:
                         inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
+//                        if (rf[x][y].equals(ResearchFlag.NOT_RESEARCH)){
+//                            inv.setItem(ix+9*iy+3,Material.PURPLE_STAINED_GLASS_PANE," ");
+//                        }
                         inv.enchantItem(ix+9*iy+3);
                         break;
                 }
             }
         }
     }
+
+//    private void ResearchMap(int[] playerPoint,LabyrinthSystem labyrinth){
+//        int a = playerPoint[0];
+//        int b = playerPoint[1];
+//        ResearchFlag[][] rf = labyrinth.labyrinthFlag;
+//        for (int i = -1;i < 1;i++){
+//            for (int j = -1;j < 1;j++){
+//                rf[a + i][b + j] = ResearchFlag.RESEARCH;
+//            }
+//        }
+//    }
 //    public int[] getGoalPoint() {
 //        for (int i = 0;i < labyrinthSize;i++){
 //            for (int j = 0;j < labyrinthSize;j++){

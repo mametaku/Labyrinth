@@ -1,16 +1,12 @@
 package net.mametaku.labyrinth;
 
 import net.mametaku.labyrinth.gamesystem.LabyrinthSystem;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.ShulkerBullet;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-
-import java.lang.reflect.InvocationTargetException;
 
 import static net.mametaku.labyrinth.Main.*;
 

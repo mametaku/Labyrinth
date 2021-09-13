@@ -5,8 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 import static net.mametaku.labyrinth.Main.*;
 
 public class LabyrinthGUI {
