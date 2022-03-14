@@ -16,10 +16,6 @@ public class EventList implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    private boolean matchName(ItemStack item, String name) {
-        return item.getItemMeta() != null && item.getItemMeta().getDisplayName().equals(name);
-    }
-
     @EventHandler
     public void ClickGUI(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
@@ -27,34 +23,42 @@ public class EventList implements Listener {
         ItemStack clickedItem = e.getCurrentItem();
         if (e.getView().getTitle().equals(title)) {
             e.setCancelled(true);
-            if (currentPlayer.contains(e.getWhoClicked().getUniqueId())) {
-                int slot = e.getSlot();
-                if (matchName(clickedItem, "スタート")) {
-                    labyrinthGameInventory.put(labyrinthGame.get(player.getUniqueId()),new InventoryGUI(54,title));
-                    if (labyrinthGame.get(player.getUniqueId()).playerLocate.equals(LabyrinthSystem.PlayerLocate.DUNGEON)){
-                        new LabyrinthGUI().labyrinthMenu(player);
+            if (currentPlayer.contains(e.getWhoClicked().getUniqueId()) && clickedItem.getItemMeta() != null) {
+                switch (clickedItem.getItemMeta().getDisplayName()) {
+                    case "スタート":
+                        labyrinthGameInventory.put(labyrinthGame.get(player.getUniqueId()), new InventoryGUI(54, title));
+                        if (labyrinthGame.get(player.getUniqueId()).playerLocate.equals(LabyrinthSystem.PlayerLocate.DUNGEON)) {
+                            new LabyrinthGUI().labyrinthMenu(player);
+                            return;
+                        }
+                        new LabyrinthGUI().townMenu(player);
+                        break;
+                    case "ランキング":
+                        new LabyrinthGUI().rankingMenu(player);
+                        break;
+                    case "進む": {
+                        LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                        if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
+                        labyrinth.updateViewDirection();
+                        labyrinth.movePlayer(player);
+                        break;
                     }
-                    new LabyrinthGUI().townMenu(player);
-                } else if(matchName(clickedItem,"ランキング")){
-                    new LabyrinthGUI().rankingMenu(player);
-                } else if (matchName(clickedItem,"上")){
-                    LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
-                    if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
-                    labyrinth.updateViewDirection();
-                    labyrinth.movePlayer(player);
-                }else if (matchName(clickedItem,"右に回転")){
-                    LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
-                    if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
-                    labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.RIGHT,labyrinth.playerView);
-                    labyrinth.updateViewDirection();
-                    labyrinth.updateMap(player);
-                } else if (matchName(clickedItem,"左に回転")){
-                    LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
-                    if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
-                    labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.LEFT,labyrinth.playerView);
-                    labyrinth.updateViewDirection();
-                    labyrinth.updateMap(player);
-                } else if (matchName(clickedItem,"トロフィー")){
+                    case "右に回転": {
+                        LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                        if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
+                        labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.RIGHT, labyrinth.playerView);
+                        labyrinth.updateViewDirection();
+                        labyrinth.updateMap(player);
+                        break;
+                    }
+                    case "左に回転": {
+                        LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                        if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
+                        labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.LEFT, labyrinth.playerView);
+                        labyrinth.updateViewDirection();
+                        labyrinth.updateMap(player);
+                        break;
+                    }
                 }
             }
         }

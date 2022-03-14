@@ -182,60 +182,12 @@ public class LabyrinthSystem {
         }
     }
 
-//    public void show() {
-//        File file = new File(dataFolder,"labyrinth.txt");
-//        if(!file.exists()) {
-//            try {
-//                file.createNewFile();
-//            } catch (IOException e1) {
-//                e1.printStackTrace();
-//            }
-//        }
-//        PrintWriter pw = null;
-//        try {
-//            pw = new PrintWriter(new BufferedWriter(new FileWriter(file, false)));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        for (int y = 0; y < labyrinthSize; y++) {
-//            pw.println("");
-//            for (int x = 0; x < labyrinthSize; x++) {
-//                switch (labyrinthObject[x][y]) {
-//                    case WALL:
-//                        pw.print("##");
-//                        break;
-//                    case PLAYER:
-//                        pw.print("PP");
-//                        break;
-//                    case GOAL:
-//                        pw.print("GG");
-//                        break;
-//                    default:
-//                        pw.print("  ");
-//                        break;
-//                }
-//            }
-//        }
-//        pw.close();
-//    }
-
     public Boolean checkWall(int i,int j){
         return labyrinthObject[i][j].equals(MaterialType.WALL);
     }
 
     public ViewDirection getPlayerViewDirection(){
         return playerView;
-    }
-
-    public int[] getplayerPoint() {
-        for (int i = 0;i < labyrinthSize;i++){
-            for (int j = 0;j < labyrinthSize;j++){
-                if (labyrinthObject[i][j].equals(MaterialType.PLAYER)){
-                    return new int[]{i, j};
-                }
-            }
-        }
-        return null;
     }
 
     public void updateViewDirection(){
@@ -266,9 +218,8 @@ public class LabyrinthSystem {
         }
     }
 
-    public ViewDirection setPlayerViewDirection(SpinDirection spin,ViewDirection view){
+    public void setPlayerViewDirection(SpinDirection spin, ViewDirection view){
         if (spin == SpinDirection.RIGHT){
-            Bukkit.broadcastMessage("start");
             switch (view){
                 case NORTH:
                     playerView = ViewDirection.EAST;
@@ -299,7 +250,6 @@ public class LabyrinthSystem {
                     break;
             }
         }
-        return null;
     }
 
     public void updateMap(Player player){
@@ -315,7 +265,7 @@ public class LabyrinthSystem {
             }
         }
         int[] playerPoint = labyrinth.getplayerPoint();
-        ResearchMap(playerPoint);
+        researchMap(playerPoint);
         for (int i = 0;i < labyrinth.labyrinthSize;i++){
             for (int j = 0;j < labyrinth.labyrinthSize;j++) {
                 if (map[i][j].equals(LabyrinthSystem.MaterialType.PLAYER)){
@@ -367,44 +317,44 @@ public class LabyrinthSystem {
                                 labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
                                 labyrinthObject[i][j - 1] = LabyrinthSystem.MaterialType.PLAYER;
                                 playerPoint = new int[]{i, j - 1};
-                                ResearchMap(playerPoint);
+                                researchMap(playerPoint);
                                 break LOOP;
                             }
                             playerPoint = new int[]{i, j};
-                            ResearchMap(playerPoint);
+                            researchMap(playerPoint);
                             break LOOP;
                         case SOUTH:
                             if (!labyrinth.checkWall(i, j + 1)){
                                 labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
                                 labyrinthObject[i][j + 1] = LabyrinthSystem.MaterialType.PLAYER;
                                 playerPoint = new int[]{i, j + 1};
-                                ResearchMap(playerPoint);
+                                researchMap(playerPoint);
                                 break LOOP;
                             }
                             playerPoint = new int[]{i, j};
-                            ResearchMap(playerPoint);
+                            researchMap(playerPoint);
                             break LOOP;
                         case WEST:
                             if (!labyrinth.checkWall(i - 1, j)){
                                 labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
                                 labyrinthObject[i - 1][j] = LabyrinthSystem.MaterialType.PLAYER;
                                 playerPoint = new int[]{i - 1, j};
-                                ResearchMap(playerPoint);
+                                researchMap(playerPoint);
                                 break LOOP;
                             }
                             playerPoint = new int[]{i, j};
-                            ResearchMap(playerPoint);
+                            researchMap(playerPoint);
                             break LOOP;
                         case EAST:
                             if (!labyrinth.checkWall(i + 1, j)){
                                 labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
                                 labyrinthObject[i + 1][j] = LabyrinthSystem.MaterialType.PLAYER;
                                 playerPoint = new int[]{i + 1, j };
-                                ResearchMap(playerPoint);
+                                researchMap(playerPoint);
                                 break LOOP;
                             }
                             playerPoint = new int[]{i, j};
-                            ResearchMap(playerPoint);
+                            researchMap(playerPoint);
                         break LOOP;
                     }
                 }
@@ -457,7 +407,11 @@ public class LabyrinthSystem {
         }
     }
 
-    private void ResearchMap(int[] playerPoint){
+    private void goalFloor(){
+
+    }
+
+    private void researchMap(int[] playerPoint){
         int a = playerPoint[0];
         int b = playerPoint[1];
         ResearchFlag[][] rf = labyrinthFlag;
@@ -467,14 +421,26 @@ public class LabyrinthSystem {
             }
         }
     }
-//    public int[] getGoalPoint() {
-//        for (int i = 0;i < labyrinthSize;i++){
-//            for (int j = 0;j < labyrinthSize;j++){
-//                if (labyrinthObject[i][j].equals(MaterialType.GOAL)){
-//                    return new int[]{i, j};
-//                }
-//            }
-//        }
-//        return null;
-//    }
+
+    public int[] getplayerPoint() {
+        for (int i = 0;i < labyrinthSize;i++){
+            for (int j = 0;j < labyrinthSize;j++){
+                if (labyrinthObject[i][j].equals(MaterialType.PLAYER)){
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return null;
+    }
+
+    public int[] getGoalPoint() {
+        for (int i = 0;i < labyrinthSize;i++){
+            for (int j = 0;j < labyrinthSize;j++){
+                if (labyrinthObject[i][j].equals(MaterialType.GOAL)){
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return null;
+    }
 }

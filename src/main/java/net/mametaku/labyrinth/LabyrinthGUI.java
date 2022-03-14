@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 import static net.mametaku.labyrinth.Main.*;
 
 public class LabyrinthGUI {
@@ -15,7 +17,7 @@ public class LabyrinthGUI {
         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         if (labyrinth.playerLocate == null){
-            labyrinth.playerLocate = LabyrinthSystem.PlayerLocate.TOWN;
+            labyrinth.playerLocate = LabyrinthSystem.PlayerLocate.DUNGEON;
         }
         inv.setItem(10,Material.GREEN_CONCRETE,"スタート","ここをクリックで始まります！");
         inv.setItem(12,Material.BOOK,"ゲーム説明","テスト","テスト","テスト");
@@ -87,7 +89,7 @@ public class LabyrinthGUI {
         InventoryGUI inv = labyrinthGameInventory.get(labyrinth);
         inv.setItem(1,Material.matchMaterial(config.getString("Material"))," ",1);
         inv.setItem(27,Material.matchMaterial(config.getString("Material")),"左に回転",config.getInt("Leftspinarrowcmd"));
-        inv.setItem(28,Material.matchMaterial(config.getString("Material")),"上",config.getInt("Uparrowcmd"));
+        inv.setItem(28,Material.matchMaterial(config.getString("Material")),"進む",config.getInt("Uparrowcmd"));
         inv.setItem(29,Material.matchMaterial(config.getString("Material")),"右に回転",config.getInt("Rightspinarrowcmd"));
         inv.setItem(36,Material.matchMaterial(config.getString("Material")),"持ち物",config.getInt("itembagiconcmd"));
         inv.setItem(37,Material.matchMaterial(config.getString("Material")),"決定・攻撃",config.getInt("Selectandattackiconcmd"));
