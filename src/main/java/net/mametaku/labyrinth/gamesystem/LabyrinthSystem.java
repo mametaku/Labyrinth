@@ -1,6 +1,7 @@
 package net.mametaku.labyrinth.gamesystem;
 
 import net.mametaku.labyrinth.InventoryGUI;
+import net.mametaku.labyrinth.SkullMaker;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ public class LabyrinthSystem {
     public  ResearchFlag[][] labyrinthFlag = new ResearchFlag[labyrinthSize][labyrinthSize];
     public ViewDirection playerView;
     public PlayerLocate playerLocate;
+    public int playerFloor;
 
     public enum PlayerLocate{
         TOWN,
@@ -29,7 +31,8 @@ public class LabyrinthSystem {
 
     public enum MaterialType{
         EMPTY,
-        FRONTEMPTY,
+        FRONTEISEMPTY,
+        FRONTEISGOAL,
         WALL,
         PLAYER,
         GOAL,
@@ -182,14 +185,6 @@ public class LabyrinthSystem {
         }
     }
 
-    public Boolean checkWall(int i,int j){
-        return labyrinthObject[i][j].equals(MaterialType.WALL);
-    }
-
-    public ViewDirection getPlayerViewDirection(){
-        return playerView;
-    }
-
     public void updateViewDirection(){
         LabyrinthSystem.MaterialType[][] map = labyrinthObject;
         for (int i = 0;i < labyrinthSize;i++){
@@ -198,19 +193,19 @@ public class LabyrinthSystem {
                     switch (playerView){
                         case NORTH:
                             if (!map[i][j - 1].equals(WALL)){
-                                map[i][j - 1] = FRONTEMPTY;
+                                map[i][j - 1] = FRONTEISEMPTY;
                             }
                         case SOUTH:
                             if (!map[i][j + 1].equals(WALL)){
-                                map[i][j + 1] = FRONTEMPTY;
+                                map[i][j + 1] = FRONTEISEMPTY;
                             }
                         case WEST:
                             if (!map[i - 1][j].equals(WALL)){
-                                map[i - 1][j] = FRONTEMPTY;
+                                map[i - 1][j] = FRONTEISEMPTY;
                             }
                         case EAST:
                             if (!map[i + 1][j].equals(WALL)){
-                                map[i + 1][j] = FRONTEMPTY;
+                                map[i + 1][j] = FRONTEISEMPTY;
                             }
                     }
                 }
@@ -259,12 +254,15 @@ public class LabyrinthSystem {
         ViewDirection dir = playerView;
         for (int i = 0;i < labyrinth.labyrinthSize;i++){
             for (int j = 0;j < labyrinth.labyrinthSize;j++) {
-                if (map[i][j] == FRONTEMPTY){
+                if (map[i][j] == FRONTEISEMPTY){
                     map[i][j] = EMPTY;
+                }
+                if (map[i][j] == FRONTEISGOAL){
+                    map[i][j] = GOAL;
                 }
             }
         }
-        int[] playerPoint = labyrinth.getplayerPoint();
+        int[] playerPoint = labyrinth.getPlayerPoint();
         researchMap(playerPoint);
         for (int i = 0;i < labyrinth.labyrinthSize;i++){
             for (int j = 0;j < labyrinth.labyrinthSize;j++) {
@@ -272,25 +270,41 @@ public class LabyrinthSystem {
                     switch (dir){
                         case NORTH:
                             if (!map[i][j - 1].equals(WALL)){
-                                map[i][j - 1] = FRONTEMPTY;
+                                if (map[i][j - 1].equals(GOAL)){
+                                    map[i][j - 1] = FRONTEISGOAL;
+                                    break;
+                                }
+                                map[i][j - 1] = FRONTEISEMPTY;
                                 break;
                             }
                             break;
                         case SOUTH:
                             if (!map[i][j + 1].equals(WALL)){
-                                map[i][j + 1] = FRONTEMPTY;
+                                if (map[i][j + 1].equals(GOAL)){
+                                    map[i][j + 1] = FRONTEISGOAL;
+                                    break;
+                                }
+                                map[i][j + 1] = FRONTEISEMPTY;
                                 break;
                             }
                             break;
                         case WEST:
                             if (!map[i - 1][j].equals(WALL)){
-                                map[i - 1][j]= FRONTEMPTY;
+                                if (map[i - 1][j].equals(GOAL)){
+                                    map[i - 1][j] = FRONTEISGOAL;
+                                    break;
+                                }
+                                map[i - 1][j]= FRONTEISEMPTY;
                                 break;
                             }
                             break;
                         case EAST:
                             if (!map[i + 1][j].equals(WALL)){
-                                map[i + 1][j]= FRONTEMPTY;
+                                if (map[i + 1][j].equals(GOAL)){
+                                    map[i + 1][j] = FRONTEISGOAL;
+                                    break;
+                                }
+                                map[i + 1][j]= FRONTEISEMPTY;
                                 break;
                             }
                             break;
@@ -313,6 +327,9 @@ public class LabyrinthSystem {
                 if (map[i][j].equals(LabyrinthSystem.MaterialType.PLAYER)){
                     switch (view){
                         case NORTH:
+                            if (labyrinth.checkGoal(i,j - 1)){
+                                break LOOP;
+                            }
                             if (!labyrinth.checkWall(i, j - 1)){
                                 labyrinthObject[i][j] = LabyrinthSystem.MaterialType.EMPTY;
                                 labyrinthObject[i][j - 1] = LabyrinthSystem.MaterialType.PLAYER;
@@ -395,20 +412,48 @@ public class LabyrinthSystem {
                             inv.setItem(ix+9*iy+3,Material.PURPLE_STAINED_GLASS_PANE," ");
                         }
                         break;
-                    case FRONTEMPTY:
+                    case FRONTEISEMPTY:
                         inv.setItem(ix+9*iy+3,Material.BLACK_STAINED_GLASS_PANE," ");
                         if (rf[x+ix][y+iy].equals(ResearchFlag.NOT_RESEARCH)){
                             inv.setItem(ix+9*iy+3,Material.PURPLE_STAINED_GLASS_PANE," ");
                         }
                         inv.enchantItem(ix+9*iy+3);
                         break;
+                    case FRONTEISGOAL:
+                        inv.setItem(ix+9*iy+3,Material.BELL," ");
+                        if (rf[x+ix][y+iy].equals(ResearchFlag.NOT_RESEARCH)){
+                            inv.setItem(ix+9*iy+3,Material.PURPLE_STAINED_GLASS_PANE," ");
+                        }
+                        inv.enchantItem(ix+9*iy+3);
                 }
             }
         }
     }
 
-    private void goalFloor(){
+    private void nextFloor(InventoryGUI inv){
+        for(int ix=0;ix<6;ix++){
+            for(int iy=0;iy<6;iy++){
+                int finalIx = ix;
+                int finalIy = iy;
+                Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        inv.setItem(finalIx +9* finalIy +3,Material.RED_STAINED_GLASS_PANE," ");
+                        if (finalIx +9* finalIy +3 == 53){
+                            return;
+                        }
+                    }
+                },0L,2L);
+            }
+        }
+    }
 
+    private Boolean checkGoal(int i,int j){
+        return labyrinthObject[i][j].equals(GOAL);
+    }
+
+    private Boolean checkWall(int i,int j){
+        return labyrinthObject[i][j].equals(WALL);
     }
 
     private void researchMap(int[] playerPoint){
@@ -422,7 +467,7 @@ public class LabyrinthSystem {
         }
     }
 
-    public int[] getplayerPoint() {
+    public int[] getPlayerPoint() {
         for (int i = 0;i < labyrinthSize;i++){
             for (int j = 0;j < labyrinthSize;j++){
                 if (labyrinthObject[i][j].equals(MaterialType.PLAYER)){

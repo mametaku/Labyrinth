@@ -1,6 +1,7 @@
 package net.mametaku.labyrinth;
 
 import net.mametaku.labyrinth.gamesystem.LabyrinthSystem;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 public class Main extends JavaPlugin {
 
+    public static Main plugin;
     public static Config config;
     public static HashMap<UUID, LabyrinthSystem> labyrinthGame=new HashMap<>();
     public static HashMap<LabyrinthSystem,InventoryGUI> labyrinthGameInventory=new HashMap<>();
@@ -22,6 +24,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        plugin = this;
         dataFolder = this.getDataFolder();
         config=new Config(this);
         playable=false;
