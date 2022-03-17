@@ -38,24 +38,25 @@ public class EventList implements Listener {
                         break;
                     case "進む": {
                         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                        if (!labyrinth.canMove) return;
                         if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
-                        labyrinth.updateViewDirection();
+                        labyrinth.updateMap(player);
                         labyrinth.movePlayer(player);
                         break;
                     }
                     case "右に回転": {
                         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                        if (!labyrinth.canMove) return;
                         if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
                         labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.RIGHT, labyrinth.playerView);
-                        labyrinth.updateViewDirection();
                         labyrinth.updateMap(player);
                         break;
                     }
                     case "左に回転": {
                         LabyrinthSystem labyrinth = labyrinthGame.get(player.getUniqueId());
+                        if (!labyrinth.canMove) return;
                         if (labyrinth.playerLocate == LabyrinthSystem.PlayerLocate.TOWN) return;
                         labyrinth.setPlayerViewDirection(LabyrinthSystem.SpinDirection.LEFT, labyrinth.playerView);
-                        labyrinth.updateViewDirection();
                         labyrinth.updateMap(player);
                         break;
                     }
